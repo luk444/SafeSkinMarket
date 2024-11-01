@@ -20,6 +20,7 @@ import {
 } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import CustomIcon from '../components/CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
 import {FlatList} from 'react-native';
 import CoffeeCard from '../components/CoffeeCard';
 import {Dimensions} from 'react-native';
@@ -130,7 +131,7 @@ const HomeScreen = ({navigation}: any) => {
         <HeaderBar />
 
         <Text style={styles.ScreenTitle}>
-          Find the best{'\n'}coffee for you
+          Find the best{'\n'}Skin for you
         </Text>
 
         {/* Search Input */}
@@ -140,10 +141,10 @@ const HomeScreen = ({navigation}: any) => {
             onPress={() => {
               searchCoffee(searchText);
             }}>
-            <CustomIcon
+            <Ionicons
               style={styles.InputIcon}
               name="search"
-              size={FONTSIZE.size_18}
+              size={24}
               color={
                 searchText.length > 0
                   ? COLORS.primaryOrangeHex
@@ -152,7 +153,7 @@ const HomeScreen = ({navigation}: any) => {
             />
           </TouchableOpacity>
           <TextInput
-            placeholder="Find Your Coffee..."
+            placeholder="Find Your Skin..."
             value={searchText}
             onChangeText={text => {
               setSearchText(text);
@@ -166,7 +167,7 @@ const HomeScreen = ({navigation}: any) => {
               onPress={() => {
                 resetSearchCoffee();
               }}>
-              <CustomIcon
+              <Ionicons
                 style={styles.InputIcon}
                 name="close"
                 size={FONTSIZE.size_16}
@@ -226,7 +227,7 @@ const HomeScreen = ({navigation}: any) => {
           horizontal
           ListEmptyComponent={
             <View style={styles.EmptyListContainer}>
-              <Text style={styles.CategoryText}>No Coffee Available</Text>
+              <Text style={styles.CategoryText}>No Skin's Available</Text>
             </View>
           }
           showsHorizontalScrollIndicator={false}
@@ -260,7 +261,7 @@ const HomeScreen = ({navigation}: any) => {
           }}
         />
 
-        <Text style={styles.CoffeeBeansTitle}>Coffee Beans</Text>
+        <Text style={styles.CoffeeBeansTitle}>Characters Skin</Text>
 
         {/* Beans Flatlist */}
 

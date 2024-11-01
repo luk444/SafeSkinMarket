@@ -17,6 +17,7 @@ import {
   SPACING,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
 import BGIcon from './BGIcon';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.32;
@@ -57,7 +58,7 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
         style={styles.CardImageBG}
         resizeMode="cover">
         <View style={styles.CardRatingContainer}>
-          <CustomIcon
+          <Ionicons
             name={'star'}
             color={COLORS.primaryOrangeHex}
             size={FONTSIZE.size_16}
@@ -84,11 +85,11 @@ const CoffeeCard: React.FC<CoffeeCardProps> = ({
               prices: [{...price, quantity: 1}],
             });
           }}>
-          <BGIcon
+          <Ionicons
             color={COLORS.primaryWhiteHex}
-            name={'add'}
+            name={'add-outline'} // Asegúrate de que el nombre del icono es correcto
             BGColor={COLORS.primaryOrangeHex}
-            size={FONTSIZE.size_10}
+            size={24} // Aumenta el tamaño si es necesario
           />
         </TouchableOpacity>
       </View>

@@ -16,6 +16,8 @@ import {
   SPACING,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
+
 
 interface CartItemProps {
   id: string;
@@ -90,10 +92,10 @@ const CartItem: React.FC<CartItemProps> = ({
                   onPress={() => {
                     decrementCartItemQuantityHandler(id, data.size);
                   }}>
-                  <CustomIcon
-                    name="minus"
+                  <Ionicons
+                    name="remove-outline"
                     color={COLORS.primaryWhiteHex}
-                    size={FONTSIZE.size_10}
+                    size={FONTSIZE.size_8}
                   />
                 </TouchableOpacity>
                 <View style={styles.CartItemQuantityContainer}>
@@ -106,10 +108,10 @@ const CartItem: React.FC<CartItemProps> = ({
                   onPress={() => {
                     incrementCartItemQuantityHandler(id, data.size);
                   }}>
-                  <CustomIcon
+                  <Ionicons
                     name="add"
                     color={COLORS.primaryWhiteHex}
-                    size={FONTSIZE.size_10}
+                    size={FONTSIZE.size_8}
                   />
                 </TouchableOpacity>
               </View>

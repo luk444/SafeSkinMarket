@@ -16,6 +16,8 @@ import {
   SPACING,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
+
 
 interface ImageBackgroundInfoProps {
   EnableBackHandler: boolean;
@@ -60,7 +62,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                 BackHandler();
               }}>
               <GradientBGIcon
-                name="left"
+                name="arrow-back-outline"
                 color={COLORS.primaryLightGreyHex}
                 size={FONTSIZE.size_16}
               />
@@ -70,7 +72,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                 ToggleFavourite(favourite, type, id);
               }}>
               <GradientBGIcon
-                name="like"
+                name="star-outline"
                 color={
                   favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex
                 }
@@ -106,7 +108,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
               </View>
               <View style={styles.ItemPropertiesContainer}>
                 <View style={styles.ProperFirst}>
-                  <CustomIcon
+                  <Ionicons
                     name={type == 'Bean' ? 'bean' : 'beans'}
                     size={type == 'Bean' ? FONTSIZE.size_18 : FONTSIZE.size_24}
                     color={COLORS.primaryOrangeHex}
@@ -125,7 +127,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                   </Text>
                 </View>
                 <View style={styles.ProperFirst}>
-                  <CustomIcon
+                  <Ionicons
                     name={type == 'Bean' ? 'location' : 'drop'}
                     size={FONTSIZE.size_16}
                     color={COLORS.primaryOrangeHex}
@@ -136,7 +138,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
             </View>
             <View style={styles.InfoContainerRow}>
               <View style={styles.RatingContainer}>
-                <CustomIcon
+                <Ionicons
                   name={'star'}
                   color={COLORS.primaryOrangeHex}
                   size={FONTSIZE.size_20}

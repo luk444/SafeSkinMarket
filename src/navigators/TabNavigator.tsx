@@ -8,6 +8,7 @@ import FavoritesScreen from '../screens/FavoritesScreen';
 import CartScreen from '../screens/CartScreen';
 import OrderHistoryScreen from '../screens/OrderHistoryScreen';
 import CustomIcon from '../components/CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +31,7 @@ const TabNavigator = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
+            <Ionicons
               name="home"
               size={25}
               color={
@@ -44,7 +45,7 @@ const TabNavigator = () => {
         component={CartScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
+            <Ionicons
               name="cart"
               size={25}
               color={
@@ -58,8 +59,8 @@ const TabNavigator = () => {
         component={FavoritesScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
-              name="like"
+            <Ionicons
+              name="star"
               size={25}
               color={
                 focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex
@@ -72,8 +73,8 @@ const TabNavigator = () => {
         component={OrderHistoryScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <CustomIcon
-              name="bell"
+            <Ionicons
+              name="book"
               size={25}
               color={
                 focused ? COLORS.primaryOrangeHex : COLORS.primaryLightGreyHex

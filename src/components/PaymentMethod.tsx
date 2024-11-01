@@ -9,6 +9,8 @@ import {
   SPACING,
 } from '../theme/theme';
 import CustomIcon from './CustomIcon';
+import { Ionicons } from '@expo/vector-icons';
+
 
 interface PaymentMethodProps {
   paymentMode: string;
@@ -41,7 +43,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({
           colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}
           style={styles.LinearGradientWallet}>
           <View style={styles.WalletRow}>
-            <CustomIcon
+            <Ionicons
               name={'wallet'}
               color={COLORS.primaryOrangeHex}
               size={FONTSIZE.size_30}
