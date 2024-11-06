@@ -5,9 +5,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CoffeeData from '../data/CoffeeData';
 import BeansData from '../data/BeansData';
 
+
+
 export const useStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       CoffeeList: CoffeeData,
       BeanList: BeansData,
       CartPrice: 0,
@@ -214,3 +216,5 @@ export const useStore = create(
     },
   ),
 );
+
+

@@ -109,8 +109,8 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
               <View style={styles.ItemPropertiesContainer}>
                 <View style={styles.ProperFirst}>
                   <Ionicons
-                    name={type == 'Bean' ? 'bean' : 'beans'}
-                    size={type == 'Bean' ? FONTSIZE.size_18 : FONTSIZE.size_24}
+                    name={type == 'star' ? 'star' : 'star'}
+                    size={type == 'star' ? FONTSIZE.size_18 : FONTSIZE.size_24}
                     color={COLORS.primaryOrangeHex}
                   />
                   <Text
@@ -118,7 +118,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                       styles.PropertyTextFirst,
                       {
                         marginTop:
-                          type == 'Bean'
+                          type == 'star'
                             ? SPACING.space_4 + SPACING.space_2
                             : 0,
                       },
@@ -128,7 +128,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                 </View>
                 <View style={styles.ProperFirst}>
                   <Ionicons
-                    name={type == 'Bean' ? 'location' : 'drop'}
+                    name={type == 'star' ? 'location' : 'star'}
                     size={FONTSIZE.size_16}
                     color={COLORS.primaryOrangeHex}
                   />

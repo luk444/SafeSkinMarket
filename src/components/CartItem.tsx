@@ -153,35 +153,7 @@ const CartItem: React.FC<CartItemProps> = ({
                 <Text style={styles.SizePrice}> {prices[0].price}</Text>
               </Text>
             </View>
-            <View style={styles.CartItemSingleQuantityContainer}>
-              <TouchableOpacity
-                style={styles.CartItemIcon}
-                onPress={() => {
-                  decrementCartItemQuantityHandler(id, prices[0].size);
-                }}>
-                <CustomIcon
-                  name="minus"
-                  color={COLORS.primaryWhiteHex}
-                  size={FONTSIZE.size_10}
-                />
-              </TouchableOpacity>
-              <View style={styles.CartItemQuantityContainer}>
-                <Text style={styles.CartItemQuantityText}>
-                  {prices[0].quantity}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={styles.CartItemIcon}
-                onPress={() => {
-                  incrementCartItemQuantityHandler(id, prices[0].size);
-                }}>
-                <CustomIcon
-                  name="add"
-                  color={COLORS.primaryWhiteHex}
-                  size={FONTSIZE.size_10}
-                />
-              </TouchableOpacity>
-            </View>
+           
           </View>
         </LinearGradient>
       )}

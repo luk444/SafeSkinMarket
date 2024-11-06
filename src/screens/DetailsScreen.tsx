@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -7,8 +7,9 @@ import {
   View,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {useStore} from '../store/store';
+import { useStore } from '../store/store';
 import {
   BORDERRADIUS,
   COLORS,
@@ -18,10 +19,11 @@ import {
 } from '../theme/theme';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
 import PaymentFooter from '../components/PaymentFooter';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-const DetailsScreen = ({navigation, route}: any) => {
+const DetailsScreen = ({ navigation, route }: any) => {
   const ItemOfIndex = useStore((state: any) =>
-    route.params.type == 'Coffee' ? state.CoffeeList : state.BeanList,
+    route.params.type === 'Coffee' ? state.CoffeeList : state.BeanList,
   )[route.params.index];
   const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);
   const deleteFromFavoriteList = useStore(
@@ -59,7 +61,7 @@ const DetailsScreen = ({navigation, route}: any) => {
       imagelink_square,
       special_ingredient,
       type,
-      prices: [{...price, quantity: 1}],
+      prices: [{ ...price, quantity: 1 }],
     });
     calculateCartPrice();
     navigation.navigate('Cart');
@@ -108,42 +110,14 @@ const DetailsScreen = ({navigation, route}: any) => {
               </Text>
             </TouchableWithoutFeedback>
           )}
-          <Text style={styles.InfoTitle}>Size</Text>
-          <View style={styles.SizeOuterContainer}>
-            {ItemOfIndex.prices.map((data: any) => (
-              <TouchableOpacity
-                key={data.size}
-                onPress={() => {
-                  setPrice(data);
-                }}
-                style={[
-                  styles.SizeBox,
-                  {
-                    borderColor:
-                      data.size == price.size
-                        ? COLORS.primaryOrangeHex
-                        : COLORS.primaryDarkGreyHex,
-                  },
-                ]}>
-                <Text
-                  style={[
-                    styles.SizeText,
-                    {
-                      fontSize:
-                        ItemOfIndex.type == 'Bean'
-                          ? FONTSIZE.size_14
-                          : FONTSIZE.size_16,
-                      color:
-                        data.size == price.size
-                          ? COLORS.primaryOrangeHex
-                          : COLORS.secondaryLightGreyHex,
-                    },
-                  ]}>
-                  {data.size}
-                </Text>
-              </TouchableOpacity>
-            ))}
+
+          {/* Información del vendedor */}
+          <Text style={styles.InfoTitle}>Vendedor</Text>
+          <View style={styles.VendorInfo}>
+            <Image source={ItemOfIndex.avatar} style={styles.Avatar} />
+            <Text style={styles.VendorName}>{ItemOfIndex.vendor}</Text>
           </View>
+         
         </View>
         <PaymentFooter
           price={price}
@@ -191,18 +165,31 @@ const styles = StyleSheet.create({
     color: COLORS.primaryWhiteHex,
     marginBottom: SPACING.space_30,
   },
-  SizeOuterContainer: {
-    flex: 1,
+  VendorInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: SPACING.space_20,
+    alignItems: 'center',
+    marginBottom: SPACING.space_20,
+    backgroundColor: COLORS.primaryDarkGreyHex,
+    borderRadius: BORDERRADIUS.radius_20,
   },
-  SizeBox: {
+  Avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: BORDERRADIUS.radius_20,
+    marginRight: SPACING.space_10,
+    backgroundColor: COLORS.primaryRedHex
+  },
+  VendorName: {
+    fontFamily: FONTFAMILY.poppins_regular,
+    fontSize: FONTSIZE.size_14,
+    color: COLORS.primaryOrangeHex,
+  },
+  VendorBox: {
     flex: 1,
     backgroundColor: COLORS.primaryDarkGreyHex,
     alignItems: 'center',
     justifyContent: 'center',
-    height: SPACING.space_24 * 2,
+    height: SPACING.space_20 * 5,
     borderRadius: BORDERRADIUS.radius_10,
     borderWidth: 2,
   },
