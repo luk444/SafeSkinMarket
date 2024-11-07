@@ -4,23 +4,25 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Font from 'expo-font';
 import Toast from 'react-native-toast-message';
 
-// Importa tu componente de iconos personalizado y las pantallas
-import CustomIcon from './src/components/CustomIcon'; // Asegúrate de la ruta
+// Importa las pantallas
+import CustomIcon from './src/components/CustomIcon'; 
 import TabNavigator from './src/navigators/TabNavigator';
 import DetailsScreen from './src/screens/DetailsScreen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
 import PaymentScreen from './src/screens/PaymentScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        CustomIcons: require('../SafeSkinMarket/src/assets/fonts/app_icons.ttf'), // Asegúrate de la ruta y el nombre
+        CustomIcons: require('../SafeSkinMarket/src/assets/fonts/app_icons.ttf'), // Asegúrate de la ruta
       });
       setFontsLoaded(true);
     };
@@ -33,14 +35,24 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            name="Tab"
-            component={TabNavigator}
-            options={{ animation: 'slide_from_bottom' }}
-          />
+          {isAuthenticated ? (
+            // Si está autenticado, muestra TabNavigator
+            <Stack.Screen
+              name="Tab"
+              component={TabNavigator}
+              options={{ animation: 'slide_from_bottom' }}
+            />
+          ) : (
+            // Si no está autenticado, muestra LoginScreen
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ animation: 'slide_from_bottom' }}
+              initialParams={{ setIsAuthenticated }} // Pasar la función a LoginScreen
+            />
+          )}
           <Stack.Screen
             name="Details"
             component={DetailsScreen}
@@ -49,6 +61,11 @@ const App = () => {
           <Stack.Screen
             name="Payment"
             component={PaymentScreen}
+            options={{ animation: 'slide_from_bottom' }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={RegisterScreen}
             options={{ animation: 'slide_from_bottom' }}
           />
         </Stack.Navigator>
