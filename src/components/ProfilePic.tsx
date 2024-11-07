@@ -6,7 +6,7 @@ const ProfilePic = () => {
   return (
     <View style={styles.ImageContainer}>
       <Image
-        source={require('../assets/app_images/avatar.png')}
+        source={require('../assets/app_images/avatar.png')} // Asegúrate de tener la imagen en esa ruta
         style={styles.Image}
       />
     </View>

@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import GradientBGIcon from './GradientBGIcon';
+import { Ionicons } from '@expo/vector-icons';
 import ProfilePic from './ProfilePic';
 import { auth } from '../firebase';
+import { useNavigation } from '@react-navigation/native';
 
 interface HeaderBarProps {
   title?: string;
@@ -11,6 +13,7 @@ interface HeaderBarProps {
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
   const [username, setUsername] = useState('');
+  const navigation = useNavigation(); // Hook para la navegación
 
   useEffect(() => {
     // Obtener el nombre del usuario autenticado desde Firebase
@@ -30,7 +33,20 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ title }) => {
       <Text style={styles.HeaderText}>
         {username ? `Bienvenido, ${username}` : title} {/* Mostrar nombre de usuario si está disponible */}
       </Text>
-      <ProfilePic />
+
+      <View style={styles.rightContainer}>
+        {/* Botón de configuración */}
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Settings'); // Navegar a SettingsScreen
+          }}
+          style={styles.settingsButton}>
+          <Ionicons name="settings" size={24} color={COLORS.primaryWhiteHex} />
+        </TouchableOpacity>
+
+        {/* Perfil de usuario */}
+        <ProfilePic />
+      </View>
     </View>
   );
 };
@@ -47,6 +63,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_20,
     color: COLORS.primaryWhiteHex,
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  settingsButton: {
+    marginRight: SPACING.space_20, // Espacio entre el ícono y el perfil
   },
 });
 
