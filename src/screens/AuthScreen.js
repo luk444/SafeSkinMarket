@@ -1,28 +1,24 @@
-// AuthScreen.js
-import React, { useState } from 'react';
-import Login from './Login';
-import Register from './Register';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-function AuthScreen({ onLoginSuccess }) {
-  const [isLogin, setIsLogin] = useState(true);
+const AuthContext = createContext();
 
-  const toggleAuth = () => {
-    setIsLogin(!isLogin);
-  };
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, setUser);
+    return () => unsubscribe();
+  }, [auth]);
 
   return (
-    <div>
-      <h1>{isLogin ? "Iniciar Sesión" : "Registrarse"}</h1>
-      {isLogin ? (
-        <Login onLoginSuccess={onLoginSuccess} />
-      ) : (
-        <Register />
-      )}
-      <button onClick={toggleAuth}>
-        {isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión"}
-      </button>
-    </div>
+    <AuthContext.Provider value={{ user }}>
+      {children}
+    </AuthContext.Provider>
   );
-
-
-export default AuthScreen;
+};
