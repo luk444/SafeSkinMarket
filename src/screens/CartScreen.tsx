@@ -18,7 +18,6 @@ import EmptyListAnimation from '../components/EmptyListAnimation';
 import PaymentFooter from '../components/PaymentFooter';
 import CartItem from '../components/CartItem';
 import { Swipeable } from 'react-native-gesture-handler';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const CartScreen = ({ navigation }: any) => {
   const [tradeUrl, setTradeUrl] = useState('');
@@ -26,6 +25,7 @@ const CartScreen = ({ navigation }: any) => {
 
   const CartList = useStore((state: any) => state.CartList);
   const CartPrice = useStore((state: any) => state.CartPrice) || 0;
+  const removeFromCart = useStore((state: any) => state.removeFromCart);
   const tabBarHeight = useBottomTabBarHeight();
   const COMMISSION_RATE = 0.17;
 
@@ -40,19 +40,8 @@ const CartScreen = ({ navigation }: any) => {
     navigation.push('Payment', { amount: totalPriceWithCommission, tradeUrl });
   };
 
-  const removeFromCart = (id: string) => {
-    useStore.setState((state: any) => ({
-      CartList: state.CartList.filter(item => item.id !== id)
-    }));
-  };
-
-  const handleSwipeableWillOpen = (id: string) => {
-    removeFromCart(id);
-  };
-
   const totalPriceWithCommission = (Number(CartPrice) * (1 + COMMISSION_RATE)).toFixed(2);
   const commissionAmount = (Number(CartPrice) * COMMISSION_RATE).toFixed(2);
-
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -71,7 +60,9 @@ const CartScreen = ({ navigation }: any) => {
                 {CartList.map((data: any) => (
                   <Swipeable
                     key={data.id}
-                    onSwipeableWillOpen={() => handleSwipeableWillOpen(data.id)}
+                    onSwipeableWillOpen={() => {
+                      removeFromCart(data.id);
+                    }}
                     overshootRight={false}
                     friction={6}
                     renderRightActions={() => (
@@ -82,15 +73,7 @@ const CartScreen = ({ navigation }: any) => {
                       </View>
                     )}>
                     <Animated.View style={styles.cartItemContainer}>
-                      <CartItem
-                        id={data.id}
-                        name={data.name}
-                        imagelink_square={data.imagelink_square}
-                        special_ingredient={data.special_ingredient}
-                        roasted={data.roasted}
-                        prices={data.prices}
-                        type={data.type}
-                      />
+                      <CartItem item={data}/>
                     </Animated.View>
                   </Swipeable>
                 ))}
@@ -129,7 +112,7 @@ const CartScreen = ({ navigation }: any) => {
               <PaymentFooter
                 buttonPressHandler={buttonPressHandler}
                 buttonTitle="Realizar Pedido"
-                price={{ price: totalPriceWithCommission, currency: '$' }}
+                price={{ price: Number(totalPriceWithCommission), currency: '$' }}
               />
             </View>
           ) : null}

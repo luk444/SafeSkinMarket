@@ -1,96 +1,30 @@
 import React from 'react';
-import {
-  Dimensions,
-  ImageBackground,
-  ImageProps,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import {
-  BORDERRADIUS,
-  COLORS,
-  FONTFAMILY,
-  FONTSIZE,
-  SPACING,
-} from '../theme/theme';
-import CustomIcon from './CustomIcon';
+import { Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import BGIcon from './BGIcon';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 
 const CARD_WIDTH = Dimensions.get('window').width * 0.32;
 
-interface CoffeeCardProps {
-  id: string;
-  index: number;
-  type: string;
-  roasted: string;
-  imagelink_square: ImageProps;
-  name: string;
-  special_ingredient: string;
-  average_rating: number;
-  price: any;
-  buttonPressHandler: any;
-}
-
-const CoffeeCard: React.FC<CoffeeCardProps> = ({
-  id,
-  index,
-  type,
-  roasted,
-  imagelink_square,
-  name,
-  special_ingredient,
-  average_rating,
-  price,
-  buttonPressHandler,
-}) => {
+const CoffeeCard = ({ id, skin, price, image, buttonPressHandler, condition, float, userName }) => {
   return (
     <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={styles.CardLinearGradientContainer}
       colors={[COLORS.primaryGreyHex, COLORS.primaryBlackHex]}>
-      <ImageBackground
-        source={imagelink_square}
-        style={styles.CardImageBG}
-        resizeMode="cover">
+      <ImageBackground source={{ uri: image }} style={styles.CardImageBG} resizeMode="cover">
         <View style={styles.CardRatingContainer}>
-          <Ionicons
-            name={'star'}
-            color={COLORS.primaryOrangeHex}
-            size={FONTSIZE.size_16}
-          />
-          <Text style={styles.CardRatingText}>{average_rating}</Text>
+          <Ionicons name="star" color={COLORS.primaryOrangeHex} size={FONTSIZE.size_16} />
+          <Text style={styles.CardRatingText}>{float}</Text>
         </View>
       </ImageBackground>
-      <Text style={styles.CardTitle}>{name}</Text>
-      <Text style={styles.CardSubtitle}>{special_ingredient}</Text>
+      <Text style={styles.CardTitle}>{skin}</Text>
+      <Text style={styles.CardSubtitle}>{condition}</Text>
       <View style={styles.CardFooterRow}>
-        <Text style={styles.CardPriceCurrency}>
-          $ <Text style={styles.CardPrice}>{price.price}</Text>
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            buttonPressHandler({
-              id,
-              index,
-              type,
-              roasted,
-              imagelink_square,
-              name,
-              special_ingredient,
-              prices: [{...price, quantity: 1}],
-            });
-          }}>
-          <Ionicons
-            color={COLORS.primaryWhiteHex}
-            name={'add-outline'} // Asegúrate de que el nombre del icono es correcto
-            BGColor={COLORS.primaryOrangeHex}
-            size={24} // Aumenta el tamaño si es necesario
-          />
+        <Text style={styles.CardPriceCurrency}>$ <Text style={styles.CardPrice}>{price}</Text></Text>
+        <TouchableOpacity onPress={() => buttonPressHandler({ id, skin, price, image })}>
+          <Ionicons color={COLORS.primaryWhiteHex} name="add-outline" size={24} />
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -101,6 +35,7 @@ const styles = StyleSheet.create({
   CardLinearGradientContainer: {
     padding: SPACING.space_15,
     borderRadius: BORDERRADIUS.radius_25,
+    margin: SPACING.space_4,
   },
   CardImageBG: {
     width: CARD_WIDTH,

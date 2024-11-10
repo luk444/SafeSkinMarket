@@ -17,13 +17,6 @@ import FavoritesItemCard from '../components/FavoritesItemCard';
 const FavoritesScreen = ({navigation}: any) => {
   const FavoritesList = useStore((state: any) => state.FavoritesList);
   const tabBarHeight = useBottomTabBarHeight();
-  const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);
-  const deleteFromFavoriteList = useStore(
-    (state: any) => state.deleteFromFavoriteList,
-  );
-  const ToggleFavourite = (favourite: boolean, type: string, id: string) => {
-    favourite ? deleteFromFavoriteList(type, id) : addToFavoriteList(type, id);
-  };
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -62,7 +55,6 @@ const FavoritesScreen = ({navigation}: any) => {
                       roasted={data.roasted}
                       description={data.description}
                       favourite={data.favourite}
-                      ToggleFavouriteItem={ToggleFavourite}
                     />
                   </TouchableOpacity>
                 ))}

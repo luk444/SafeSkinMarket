@@ -15,14 +15,13 @@ import {
   FONTSIZE,
   SPACING,
 } from '../theme/theme';
-import CustomIcon from './CustomIcon';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useStore } from '../store/store';
 
 interface ImageBackgroundInfoProps {
+  condition: string;
   EnableBackHandler: boolean;
-  imagelink_portrait: ImageProps;
-  type: string;
+  weaponImage: ImageProps;
   id: string;
   favourite: boolean;
   name: string;
@@ -31,36 +30,33 @@ interface ImageBackgroundInfoProps {
   average_rating: number;
   ratings_count: string;
   roasted: string;
+  float: string;
   BackHandler?: any;
-  ToggleFavourite: any;
 }
 
 const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
   EnableBackHandler,
-  imagelink_portrait,
-  type,
+  weaponImage,
   id,
   favourite,
   name,
-  special_ingredient,
-  ingredients,
-  average_rating,
+  condition,
   ratings_count,
   roasted,
+  float,
   BackHandler,
-  ToggleFavourite,
 }) => {
+  const deleteFromFavoriteList = useStore((state: any) => state.deleteFromFavoriteList);
+
   return (
     <View>
       <ImageBackground
-        source={imagelink_portrait}
+        source={weaponImage}
         style={styles.ItemBackgroundImage}>
         {EnableBackHandler ? (
           <View style={styles.ImageHeaderBarContainerWithBack}>
             <TouchableOpacity
-              onPress={() => {
-                BackHandler();
-              }}>
+              onPress={BackHandler}>
               <GradientBGIcon
                 name="arrow-back-outline"
                 color={COLORS.primaryLightGreyHex}
@@ -68,14 +64,10 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                ToggleFavourite(favourite, type, id);
-              }}>
+              onPress={() => deleteFromFavoriteList(id)}>
               <GradientBGIcon
                 name="star-outline"
-                color={
-                  favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex
-                }
+                color={favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
                 size={FONTSIZE.size_16}
               />
             </TouchableOpacity>
@@ -83,14 +75,10 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
         ) : (
           <View style={styles.ImageHeaderBarContainerWithoutBack}>
             <TouchableOpacity
-              onPress={() => {
-                ToggleFavourite(favourite, type, id);
-              }}>
+              onPress={() => deleteFromFavoriteList(id)}>
               <GradientBGIcon
                 name="like"
-                color={
-                  favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex
-                }
+                color={favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
                 size={FONTSIZE.size_16}
               />
             </TouchableOpacity>
@@ -102,38 +90,10 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
             <View style={styles.InfoContainerRow}>
               <View>
                 <Text style={styles.ItemTitleText}>{name}</Text>
-                <Text style={styles.ItemSubtitleText}>
-                  {special_ingredient}
-                </Text>
+                <Text style={styles.ItemSubtitleText}>{condition}</Text>
               </View>
               <View style={styles.ItemPropertiesContainer}>
-                <View style={styles.ProperFirst}>
-                  <Ionicons
-                    name={type == 'star' ? 'star' : 'star'}
-                    size={type == 'star' ? FONTSIZE.size_18 : FONTSIZE.size_24}
-                    color={COLORS.primaryOrangeHex}
-                  />
-                  <Text
-                    style={[
-                      styles.PropertyTextFirst,
-                      {
-                        marginTop:
-                          type == 'star'
-                            ? SPACING.space_4 + SPACING.space_2
-                            : 0,
-                      },
-                    ]}>
-                    {type}
-                  </Text>
-                </View>
-                <View style={styles.ProperFirst}>
-                  <Ionicons
-                    name={type == 'star' ? 'location' : 'star'}
-                    size={FONTSIZE.size_16}
-                    color={COLORS.primaryOrangeHex}
-                  />
-                  <Text style={styles.PropertyTextLast}>{ingredients}</Text>
-                </View>
+                <Text style={styles.PropertyTextFirst}>{float}</Text>
               </View>
             </View>
             <View style={styles.InfoContainerRow}>
@@ -143,7 +103,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                   color={COLORS.primaryOrangeHex}
                   size={FONTSIZE.size_20}
                 />
-                <Text style={styles.RatingText}>{average_rating}</Text>
+                <Text style={styles.RatingText}>{float}</Text>
                 <Text style={styles.RatingCountText}>({ratings_count})</Text>
               </View>
               <View style={styles.RoastedContainer}>
@@ -206,24 +166,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: SPACING.space_20,
   },
-  ProperFirst: {
-    height: 55,
-    width: 55,
-    borderRadius: BORDERRADIUS.radius_15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.primaryBlackHex,
-  },
   PropertyTextFirst: {
     fontFamily: FONTFAMILY.poppins_medium,
     fontSize: FONTSIZE.size_10,
     color: COLORS.primaryWhiteHex,
-  },
-  PropertyTextLast: {
-    fontFamily: FONTFAMILY.poppins_medium,
-    fontSize: FONTSIZE.size_10,
-    color: COLORS.primaryWhiteHex,
-    marginTop: SPACING.space_2 + SPACING.space_4,
   },
   RatingContainer: {
     flexDirection: 'row',

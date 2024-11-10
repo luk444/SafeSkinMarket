@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import {
   BORDERRADIUS,
@@ -9,7 +9,7 @@ import {
 } from '../theme/theme';
 
 interface PriceProps {
-  price: string;
+  price: number; // Cambié el tipo de `price` a `number`
   currency: string;
 }
 
@@ -28,8 +28,9 @@ const PaymentFooter: React.FC<PaymentFooterProps> = ({
     <View style={styles.PriceFooter}>
       <View style={styles.PriceContainer}>
         <Text style={styles.PriceTitle}>Price</Text>
+        {/* Asegúrate de renderizar el precio y la moneda correctamente */}
         <Text style={styles.PriceText}>
-          {price.currency} <Text style={styles.Price}>{price.price}</Text>
+          {price.currency} {price.price.toFixed(2)} {/* Usamos .toFixed(2) para formato decimal */}
         </Text>
       </View>
       <TouchableOpacity
@@ -62,9 +63,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.poppins_semibold,
     fontSize: FONTSIZE.size_24,
     color: COLORS.primaryOrangeHex,
-  },
-  Price: {
-    color: COLORS.primaryWhiteHex,
   },
   PayButton: {
     backgroundColor: COLORS.primaryOrangeHex,
