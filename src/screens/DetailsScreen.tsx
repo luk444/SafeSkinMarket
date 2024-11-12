@@ -47,7 +47,6 @@ const DetailsScreen = ({ navigation, route }: any) => {
           weaponImage={{ uri: image }} // Pasa la imagen del arma aquí
           type="Weapon"
           id={id}
-          favourite={false}
           name={skin}
           condition={condition}
           ingredients="Ingredients"
@@ -56,6 +55,7 @@ const DetailsScreen = ({ navigation, route }: any) => {
           float={float} // Se agrega el float aquí
           userName={userName} // Agrega el nombre del vendedor aquí
           BackHandler={BackHandler}
+          price={price}
         />
 
         <View style={styles.FooterInfoArea}>

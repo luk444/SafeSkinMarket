@@ -23,7 +23,6 @@ interface ImageBackgroundInfoProps {
   EnableBackHandler: boolean;
   weaponImage: ImageProps;
   id: string;
-  favourite: boolean;
   name: string;
   special_ingredient: string;
   ingredients: string;
@@ -38,16 +37,26 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
   EnableBackHandler,
   weaponImage,
   id,
-  favourite,
   name,
   condition,
   ratings_count,
   roasted,
   float,
   BackHandler,
+  price,
 }) => {
+  const addToFavoriteList = useStore((state: any) => state.addToFavoriteList);
   const deleteFromFavoriteList = useStore((state: any) => state.deleteFromFavoriteList);
+  const FavoritesList = useStore((state: any) => state.FavoritesList);
+  const isFavorite = FavoritesList.some((item: any) => item.id === id);
 
+  const handleToggleFavorite = () => {
+    if(isFavorite){
+      deleteFromFavoriteList(id);
+    }else{
+      addToFavoriteList({id, name, price})
+    }
+  }
   return (
     <View>
       <ImageBackground
@@ -64,10 +73,10 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => deleteFromFavoriteList(id)}>
+              onPress={handleToggleFavorite}>
               <GradientBGIcon
                 name="star-outline"
-                color={favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
+                color={isFavorite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
                 size={FONTSIZE.size_16}
               />
             </TouchableOpacity>
@@ -75,10 +84,10 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
         ) : (
           <View style={styles.ImageHeaderBarContainerWithoutBack}>
             <TouchableOpacity
-              onPress={() => deleteFromFavoriteList(id)}>
+              onPress={handleToggleFavorite}>
               <GradientBGIcon
                 name="like"
-                color={favourite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
+                color={isFavorite ? COLORS.primaryRedHex : COLORS.primaryLightGreyHex}
                 size={FONTSIZE.size_16}
               />
             </TouchableOpacity>

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   StatusBar,
   ScrollView,
@@ -16,6 +15,9 @@ import FavoritesItemCard from '../components/FavoritesItemCard';
 
 const FavoritesScreen = ({navigation}: any) => {
   const FavoritesList = useStore((state: any) => state.FavoritesList);
+  const CartList = useStore((state: any) => state.CartList);
+  console.log('FavoritesList',FavoritesList)
+  console.log('CartList',CartList)
   const tabBarHeight = useBottomTabBarHeight();
   return (
     <View style={styles.ScreenContainer}>
@@ -27,10 +29,10 @@ const FavoritesScreen = ({navigation}: any) => {
         <View
           style={[styles.ScrollViewInnerView, {marginBottom: tabBarHeight}]}>
           <View style={styles.ItemContainer}>
-            <HeaderBar title="Favourites" />
+            <HeaderBar title="Favorites" />
 
             {FavoritesList.length == 0 ? (
-              <EmptyListAnimation title={'No Favourites'} />
+              <EmptyListAnimation title={'No Favorites'} />
             ) : (
               <View style={styles.ListItemContainer}>
                 {FavoritesList.map((data: any) => (
@@ -54,7 +56,7 @@ const FavoritesScreen = ({navigation}: any) => {
                       ratings_count={data.ratings_count}
                       roasted={data.roasted}
                       description={data.description}
-                      favourite={data.favourite}
+                      price={data.price}
                     />
                   </TouchableOpacity>
                 ))}
