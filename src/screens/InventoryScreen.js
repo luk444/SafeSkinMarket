@@ -15,7 +15,8 @@ function InventoryScreen() {
   const [apiKey, setApiKey] = useState('');
   const [inventory, setInventory] = useState(null);
   const navigation = useNavigation();
-
+  console.log('user',user);
+  
   useEffect(() => {
     const handleDeepLink = (event) => {
       const url = event.url;
@@ -90,7 +91,7 @@ function InventoryScreen() {
               ))}
             </View>
           ) : (
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator color="#0000ff" />
           )}
         </ScrollView>
       )}

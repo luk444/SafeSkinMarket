@@ -12,14 +12,17 @@ const LoginScreen = ({ route, navigation }) => {
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('userCredential.', userCredential)
-      setUser({uid:userCredential.user.uid})
+      console.log('userCredential: ', userCredential);
+      setUser({ 
+        uid: userCredential.user.uid,
+        name: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoURL: userCredential.user.photoURL,
+      });
       route.params.setIsAuthenticated(true);
-      navigation.replace('Tab');
     } catch (error) {
       Alert.alert('Error', 'Credenciales incorrectas');
     }
-    
   };
   
 
