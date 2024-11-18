@@ -5,10 +5,9 @@ import {
   StyleSheet,
   Text,
   View,
-  Animated,
   TextInput,
-  Button,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { useStore } from '../store/store';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -17,7 +16,6 @@ import HeaderBar from '../components/HeaderBar';
 import EmptyListAnimation from '../components/EmptyListAnimation';
 import PaymentFooter from '../components/PaymentFooter';
 import CartItem from '../components/CartItem';
-import { Swipeable } from 'react-native-gesture-handler';
 
 const CartScreen = ({ navigation }: any) => {
   const [tradeUrl, setTradeUrl] = useState('');
@@ -58,24 +56,20 @@ const CartScreen = ({ navigation }: any) => {
             ) : (
               <View style={styles.ListItemContainer}>
                 {CartList.map((data: any) => (
-                  <Swipeable
+                  <TouchableOpacity
                     key={data.id}
-                    onSwipeableWillOpen={() => {
+                    onPress={() => {
                       removeFromCart(data.id);
-                    }}
-                    overshootRight={false}
-                    friction={6}
-                    renderRightActions={() => (
+                    }}>
+                    <View style={styles.cartItemContainer}>
+                      <CartItem item={data}/>
                       <View style={styles.deleteContainer}>
                         <Text style={styles.deleteText}>
                           Eliminar
                         </Text>
                       </View>
-                    )}>
-                    <Animated.View style={styles.cartItemContainer}>
-                      <CartItem item={data}/>
-                    </Animated.View>
-                  </Swipeable>
+                    </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}

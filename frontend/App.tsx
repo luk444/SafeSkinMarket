@@ -12,7 +12,6 @@ import PaymentScreen from './src/screens/PaymentScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +22,7 @@ const App = () => {
   useEffect(() => {
     const loadFonts = async () => {
       await Font.loadAsync({
-        CustomIcons: require('../SafeSkinMarket/src/assets/fonts/app_icons.ttf'), // Asegúrate de la ruta
+        CustomIcons: require('./src/assets/fonts/app_icons.ttf'), // Asegúrate de la ruta
       });
       setFontsLoaded(true);
     };
@@ -35,7 +34,6 @@ const App = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {isAuthenticated ? (
@@ -77,7 +75,6 @@ const App = () => {
           </Stack.Navigator>
           <Toast />
       </NavigationContainer>
-    </GestureHandlerRootView>
   );
 };
 
