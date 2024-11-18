@@ -12,14 +12,17 @@ const LoginScreen = ({ route, navigation }) => {
   const handleLogin = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('userCredential: ', userCredential);
-      setUser({ 
+      if(!userCredential?.user?.uid) throw Error;
+      const userData = { 
         uid: userCredential.user.uid,
         name: userCredential.user.displayName,
         email: userCredential.user.email,
         photoURL: userCredential.user.photoURL,
-      });
+      };
+      setUser(userData);
+      console.log('LOGGED IN: ', userData)
       route.params.setIsAuthenticated(true);
+
     } catch (error) {
       Alert.alert('Error', 'Credenciales incorrectas');
     }
