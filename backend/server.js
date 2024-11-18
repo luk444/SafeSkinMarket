@@ -1,16 +1,26 @@
 const express = require('express');
-const session = require('express-session');
 const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
 const axios = require('axios');
 const cors = require('cors');
 const helmet = require('helmet');
 const dotenv = require('dotenv');
+const bodyParser = require("body-parser");
+const admin = require("firebase-admin");
+
+// Inicializar Firebase Admin con tu clave privada
+const serviceAccount = require("./safetrade-firebase-backend-admin.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+app.use(bodyParser.json());
 
 // Seguridad adicional con Helmet para proteger cabeceras
 app.use(helmet());
@@ -21,26 +31,13 @@ app.use(cors({
   credentials: true // Permitir el envío de cookies
 }));
 
-// Configuración de la sesión con cookies seguras
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_secret_key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // true si está en producción
-    maxAge: 24 * 60 * 60 * 1000, // 1 día
-  }
-}));
-
 // Inicializar Passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 // Configuración de la estrategia de autenticación de Steam
 passport.use(new SteamStrategy({
-  returnURL: `${process.env.BACKEND_URL || 'http://localhost:5001'}/auth/steam/return`,
-  realm: process.env.BACKEND_URL || 'http://localhost:5001',
+  returnURL: `${process.env.BACKEND_URL || 'http://192.168.1.41:5001'}/auth/steam/return`,
+  realm: process.env.BACKEND_URL || 'http://192.168.1.41:5001',
   apiKey: process.env.STEAM_API_KEY,
 }, (identifier, profile, done) => {
   profile.identifier = identifier;
@@ -55,11 +52,25 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 });
 
-// Ruta de test
-app.get('/', (req, res)=>{
-  res.status(200).json({ message: "Hi" });
+// Middleware para verificar el token de Firebase
+const authenticateFirebaseToken = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return res.status(401).json({ error: "Token no proporcionado" });
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = decodedToken; // Decodificar y añadir datos del usuario al request
+    next();
+  } catch (error) {
+    res.status(401).json({ error: "Token inválido" });
   }
-);
+};
+
+// Endpoint protegido
+app.get("/profile", authenticateFirebaseToken, (req, res) => {
+  res.json({ message: "¡Bienvenido!", user: req.user });
+});
 
 
 // Ruta de autenticación con Steam
@@ -82,7 +93,7 @@ app.get('/auth/steam/return',
         message: `Hola, ${req.user.displayName}!`
       };
       const userDataString = encodeURIComponent(JSON.stringify(userData));
-      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard?userData=${userDataString}`);
+      res.redirect(`${process.env.FRONTEND_URL || 'http://192.168.1.41:3000'}/dashboard?userData=${userDataString}`);
     } else {
       res.redirect('/');
     }
@@ -98,14 +109,9 @@ app.get('/logout', (req, res) => {
 });
 
 // Ruta para obtener el inventario del usuario autenticado
-app.get('/api/inventory', async (req, res) => {
+app.get('/api/inventory', authenticateFirebaseToken, async (req, res) => {
   console.log('get /api/inventory')
-  if (!req.isAuthenticated()) {
-    console.log("No autenticado");
-    return res.status(401).json({ message: "No autenticado" });
-  }
-
-  // Verifica que el usuario esté autenticado y que req.user tenga un ID de Steam
+  // TODO check token
   const steamId = req.user?.id;
   console.log('req.user', req.user);
   console.log('steamId', steamId);
@@ -129,5 +135,5 @@ app.get('/api/inventory', async (req, res) => {
 
 // Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor backend escuchando: ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`);
+  console.log(`Servidor backend escuchando: ${process.env.BACKEND_URL || `http://192.168.1.41:${PORT}`}`);
 });

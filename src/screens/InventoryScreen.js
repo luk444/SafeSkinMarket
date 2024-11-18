@@ -3,7 +3,9 @@ import { View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, TextInput
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as Linking from 'expo-linking';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Importa Firestore
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import LoginWithSteamButton from '../components/LoginWithSteamButton';
 import { useStore } from '../store/store';
 import { getAuth } from '@firebase/auth';
@@ -54,13 +56,26 @@ function InventoryScreen() {
     };
   }, [navigation]);
 
-  useEffect(() => {
-    if (user.apiKeySteam) {
-      // REEMPLAZAR POR IP PRIVADA DE LA COMPUTADORA EJECUTANDO
-      axios.get('http://192.168.1.41:5001/api/inventory', { withCredentials: true })
-        .then(response => setInventory(response.data))
-        .catch(error => console.error('Error al obtener inventario:', error?.toString()));
+  useEffect(()=>{
+    async function fetchInventory() {
+      try {
+        console.log('fetchInventory')
+        const token = await AsyncStorage.getItem("token");
+          if (token) {
+            // Enviar el token al backend
+            // REEMPLAZAR POR IP PRIVADA DE LA COMPUTADORA EJECUTANDO
+          const response = await axios.get("http://192.168.1.41:5001/api/inventory", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          console.log("response /api/inventory backend: ", response);
+          Alert.alert("Perfil", `¡Bienvenido ${response.data.user.email}!`);
+        }
+      } catch (error) {
+        console.error('Error al obtener inventario:', error?.toString());
+        Alert.alert("Error", "Error al obtener inventario");
+      }
     }
+    fetchInventory()
   }, [user]);
 
   const handleSaveApiKey = async () => {

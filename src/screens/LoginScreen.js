@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signInWithEmailAndPassword } from 'firebase/auth';
+
 import { auth } from '../firebase';
 import { useStore } from '../store/store';
 
@@ -13,6 +15,13 @@ const LoginScreen = ({ route, navigation }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if(!userCredential?.user?.uid) throw Error;
+
+      // Obtener el token de Firebase
+      const token = await userCredential.user.getIdToken();
+      console.log('token login: ', token)
+      // Guardar el token en AsyncStorage
+      await AsyncStorage.setItem("token", token);
+
       const userData = { 
         uid: userCredential.user.uid,
         name: userCredential.user.displayName,

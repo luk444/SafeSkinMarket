@@ -1,5 +1,9 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
+# private key to access firebase as admin
+backend/safetrade-firebase-backend-admin.json
+backend/node_modules/
+
 # dependencies
 node_modules/
 
