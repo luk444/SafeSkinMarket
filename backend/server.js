@@ -17,8 +17,8 @@ app.use(helmet());
 
 // Middleware CORS para permitir solicitudes desde el frontend
 app.use(cors({
-  origin: 'http://localhost:3000', // Solo permitir el acceso desde tu dominio
-  credentials: true
+  origin: process.env.NODE_ENV !== 'production', // Permitir todos los orígenes estando fuera de production
+  credentials: true // Permitir el envío de cookies
 }));
 
 // Configuración de la sesión con cookies seguras
@@ -54,6 +54,13 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((obj, done) => {
   done(null, obj);
 });
+
+// Ruta de test
+app.get('/', (req, res)=>{
+  res.status(200).json({ message: "Hi" });
+  }
+);
+
 
 // Ruta de autenticación con Steam
 app.get('/auth/steam',
@@ -92,16 +99,20 @@ app.get('/logout', (req, res) => {
 
 // Ruta para obtener el inventario del usuario autenticado
 app.get('/api/inventory', async (req, res) => {
+  console.log('get /api/inventory')
   if (!req.isAuthenticated()) {
+    console.log("No autenticado");
     return res.status(401).json({ message: "No autenticado" });
   }
 
   // Verifica que el usuario esté autenticado y que req.user tenga un ID de Steam
-  const steamId = req.user.id;
+  const steamId = req.user?.id;
+  console.log('req.user', req.user);
+  console.log('steamId', steamId);
   if (!steamId) {
+    console.log("Steam ID no encontrado");
     return res.status(400).json({ message: "Steam ID no encontrado" });
   }
-  console.log('steamId', steamId);
   
   // URL para obtener el inventario de Steam
   const inventoryUrl = `https://steamcommunity.com/inventory/${steamId}/730/2?l=english&count=5000`;
@@ -118,5 +129,5 @@ app.get('/api/inventory', async (req, res) => {
 
 // Iniciar el servidor
 app.listen(PORT, () => {
-  console.log(`Servidor backend corriendo en ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`);
+  console.log(`Servidor backend escuchando: ${process.env.BACKEND_URL || `http://localhost:${PORT}`}`);
 });

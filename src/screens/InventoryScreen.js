@@ -3,9 +3,10 @@ import { View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, TextInput
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import * as Linking from 'expo-linking';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore'; // Importa Firestore
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Importa Firestore
 import LoginWithSteamButton from '../components/LoginWithSteamButton';
 import { useStore } from '../store/store';
+import { getAuth } from '@firebase/auth';
 
 const db = getFirestore();
 
@@ -15,8 +16,26 @@ function InventoryScreen() {
   const [apiKey, setApiKey] = useState('');
   const [inventory, setInventory] = useState(null);
   const navigation = useNavigation();
-  console.log('user',user);
-  
+
+  // Check if we have the apiKeySteam from sellers table
+  useEffect(async()=>{
+    if (user) {
+      const sellerDocRef = doc(db, "sellers", user.uid);
+      try {
+        const sellerDoc = await getDoc(sellerDocRef);
+        if (sellerDoc.exists()) {
+          const sellerData = sellerDoc.data();
+          console.log("API Key Steam:", sellerData.apiKeySteam);
+          setUser({...user, apiKeySteam: sellerData.apiKeySteam})
+        }
+      } catch (error) {
+        console.error("Error al leer los datos del vendedor:", error);
+      }
+    } else {
+      Alert.alert("Usuario no autenticado");
+    }
+},[])
+
   useEffect(() => {
     const handleDeepLink = (event) => {
       const url = event.url;
@@ -36,33 +55,42 @@ function InventoryScreen() {
   }, [navigation]);
 
   useEffect(() => {
-    if (user.steamApiKey) {
-      axios.get('http://localhost:5001/api/inventory', { withCredentials: true })
+    if (user.apiKeySteam) {
+      // REEMPLAZAR POR IP PRIVADA DE LA COMPUTADORA EJECUTANDO
+      axios.get('http://192.168.1.41:5001/api/inventory', { withCredentials: true })
         .then(response => setInventory(response.data))
-        .catch(error => console.error('Error al obtener inventario:', error));
+        .catch(error => console.error('Error al obtener inventario:', error?.toString()));
     }
   }, [user]);
 
   const handleSaveApiKey = async () => {
-    if (!apiKey) {
+    if (!apiKey.trim()) {
       Alert.alert('Error', 'Por favor ingrese su API key.');
       return;
     }
 
-    try {
-      const userDocRef = doc(db, 'users', user.uid);
-      await updateDoc(userDocRef, { apiKey });
-      Alert.alert('Éxito', 'API key guardada exitosamente.');
-    } catch (error) {
-      console.error('Error al guardar API key:', error);
-      Alert.alert('Error', 'Hubo un problema al guardar su API key.');
+    if (user) {
+      const sellerDocRef = doc(db, "sellers", user.uid);
+      try {
+        await setDoc(sellerDocRef, { apiKeySteam: apiKey, uid: user.uid });
+        Alert.alert('Éxito', 'API key guardada exitosamente.');
+        setUser({...user, apiKeySteam: apiKey})
+      } catch (error) {
+        console.error("Error al guardar la API Key:", error);
+        Alert.alert('Error', 'Hubo un problema al guardar su API key.');
+    }
+    } else {
+      Alert.alert("Usuario no autenticado");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido a la Steam Login App</Text>
-      {!user.steamApiKey ? (
+      <Text style={styles.title}>Quieres vender tus skins?</Text>
+      <Text style={styles.subtitle}>Para que puedas seleccionar una skin dentro de tu inventario, necesitamos que nos des
+        tu API KEY para tener acceso a ella. No te preocupes, es para lo único que la utilizaremos.
+      </Text>
+      {!user.apiKeySteam ? (
         <>
           <TextInput
             style={styles.input}
@@ -70,7 +98,7 @@ function InventoryScreen() {
             value={apiKey}
             onChangeText={setApiKey}
           />
-          <Button title="Guardar API Key" onPress={handleSaveApiKey} />
+          <Button title={`${user.apiKeySteam ? 'Actualizar' : 'Guardar'} API Key`} onPress={handleSaveApiKey} />
           <LoginWithSteamButton />
         </>
       ) : (
@@ -105,12 +133,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#f3f4f6',
     paddingHorizontal: 20,
+    marginTop: 34,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#1f2937',
     textAlign: 'center',
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#1f2937',
+    textAlign: 'left',
     marginBottom: 20,
   },
   input: {
