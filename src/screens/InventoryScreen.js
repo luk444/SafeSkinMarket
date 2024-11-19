@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
 import * as Linking from 'expo-linking';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LoginWithSteamButton from '../components/LoginWithSteamButton';
 import { useStore } from '../store/store';
-import { getAuth } from '@firebase/auth';
 
 const db = getFirestore();
 
@@ -56,28 +53,6 @@ function InventoryScreen() {
     };
   }, [navigation]);
 
-  useEffect(()=>{
-    async function fetchInventory() {
-      try {
-        console.log('fetchInventory')
-        const token = await AsyncStorage.getItem("token");
-          if (token) {
-            // Enviar el token al backend
-            // REEMPLAZAR POR IP PRIVADA DE LA COMPUTADORA EJECUTANDO
-          const response = await axios.get("http://192.168.1.41:5001/api/inventory", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          console.log("response /api/inventory backend: ", response);
-          Alert.alert("Perfil", `¡Bienvenido ${response.data.user.email}!`);
-        }
-      } catch (error) {
-        console.error('Error al obtener inventario:', error?.toString());
-        Alert.alert("Error", "Error al obtener inventario");
-      }
-    }
-    fetchInventory()
-  }, [user]);
-
   const handleSaveApiKey = async () => {
     if (!apiKey.trim()) {
       Alert.alert('Error', 'Por favor ingrese su API key.');
@@ -105,7 +80,6 @@ function InventoryScreen() {
       <Text style={styles.subtitle}>Para que puedas seleccionar una skin dentro de tu inventario, necesitamos que nos des
         tu API KEY para tener acceso a ella. No te preocupes, es para lo único que la utilizaremos.
       </Text>
-      {!user.apiKeySteam ? (
         <>
           <TextInput
             style={styles.input}
@@ -114,9 +88,8 @@ function InventoryScreen() {
             onChangeText={setApiKey}
           />
           <Button title={`${user.apiKeySteam ? 'Actualizar' : 'Guardar'} API Key`} onPress={handleSaveApiKey} />
-          <LoginWithSteamButton />
+          <LoginWithSteamButton setInventory={setInventory} />
         </>
-      ) : (
         <ScrollView contentContainerStyle={styles.centerContent}>
           <Text style={styles.message}>{user.message}</Text>
           <Image source={{ uri: user.avatar }} style={styles.avatar} />
@@ -137,7 +110,6 @@ function InventoryScreen() {
             <ActivityIndicator color="#0000ff" />
           )}
         </ScrollView>
-      )}
     </View>
   );
 }
