@@ -16,16 +16,16 @@ function InventoryScreen() {
   const [inventory, setInventory] = useState(null);
   const navigation = useNavigation();
 
-  // Check if we have the apiKeySteam from sellers table
+  // Check if we have the steamApiKey from steamUsers table
   useEffect(async()=>{
     if (user) {
-      const sellerDocRef = doc(db, "sellers", user.uid);
+      const steamUsersDocRef = doc(db, "steamUsers", user.uid);
       try {
-        const sellerDoc = await getDoc(sellerDocRef);
+        const sellerDoc = await getDoc(steamUsersDocRef);
         if (sellerDoc.exists()) {
           const sellerData = sellerDoc.data();
-          console.log("API Key Steam:", sellerData.apiKeySteam);
-          setUser({...user, apiKeySteam: sellerData.apiKeySteam})
+          console.log("API Key Steam:", sellerData.steamApiKey);
+          setUser({...user, steamApiKey: sellerData.steamApiKey})
         }
       } catch (error) {
         console.error("Error al leer los datos del vendedor:", error);
@@ -60,11 +60,11 @@ function InventoryScreen() {
     }
 
     if (user) {
-      const sellerDocRef = doc(db, "sellers", user.uid);
+      const steamUsersDocRef = doc(db, "steamUsers", user.uid);
       try {
-        await setDoc(sellerDocRef, { apiKeySteam: apiKey, uid: user.uid });
+        await setDoc(steamUsersDocRef, { steamApiKey: apiKey, uid: user.uid });
         Alert.alert('Éxito', 'API key guardada exitosamente.');
-        setUser({...user, apiKeySteam: apiKey})
+        setUser({...user, steamApiKey: apiKey})
       } catch (error) {
         console.error("Error al guardar la API Key:", error);
         Alert.alert('Error', 'Hubo un problema al guardar su API key.');
@@ -87,7 +87,7 @@ function InventoryScreen() {
             value={apiKey}
             onChangeText={setApiKey}
           />
-          <Button title={`${user.apiKeySteam ? 'Actualizar' : 'Guardar'} API Key`} onPress={handleSaveApiKey} />
+          <Button title={`${user.steamApiKey ? 'Actualizar' : 'Guardar'} API Key`} onPress={handleSaveApiKey} />
           <LoginWithSteamButton setInventory={setInventory} />
         </>
         <ScrollView contentContainerStyle={styles.centerContent}>
